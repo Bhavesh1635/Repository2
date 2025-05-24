@@ -5,6 +5,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Text Box</title>
   <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding: 20px;
+      box-sizing: border-box;
+      background: radial-gradient(circle, #6dd5fa, #2980b9);
+      animation: glowBackground 10s ease-in-out infinite;
+      border: 6px solid #6dd5fa;
+      box-shadow: 0 0 20px #6dd5fa;
+      animation: borderGlow 10s ease-in-out infinite, glowBackground 10s ease-in-out infinite;
+    }
+
+    @keyframes glowBackground {
+      0%, 100% {
+        background: radial-gradient(circle, #6dd5fa, #2980b9);
+      }
+      50% {
+        background: radial-gradient(circle, #8ec5fc, #3f5efb);
+      }
+    }
+
+    @keyframes borderGlow {
+      0%, 100% {
+        border-color: #6dd5fa;
+        box-shadow: 0 0 20px #6dd5fa;
+      }
+      50% {
+        border-color: #8ec5fc;
+        box-shadow: 0 0 30px #8ec5fc;
+      }
+    }
+
+    .content {
+      width: 100%;
+      max-width: 800px;
+      margin-left: 15px;
+    }
+
+    /* Force black text everywhere inside .content */
+    .content,
+    .content input,
+    .content textarea,
+    .content label,
+    .content h1,
+    .content p,
+    .content span,
+    #submittedText {
+      color: black !important;
+    }
+
+    h1 {
+      text-align: left;
+    }
+
     label {
       display: block;
       margin-top: 10px;
@@ -29,7 +92,10 @@
       font-size: inherit;
     }
 
-    input [type="submit"] 
+    input[type="submit"] {
+      padding: 5px 10px;
+      font-family: inherit;
+    }
 
     #submittedContainer {
       margin-top: 20px;
@@ -39,28 +105,29 @@
       display: block;
       margin-top: 5px;
       white-space: pre-wrap;
+      font-family: inherit;
     }
   </style>
 </head>
 <body>
-  <h1>Submit Your Info</h1>
+  <div class="content">
+    <h1>Submit Your Info</h1>
+    <form id="userForm">
+      <label for="name">Name:</label>
+      <input type="text" id="nameInput" name="name" required><br><br>
 
-  <form id="userForm">
-    <label for="name">Name:</label>
-    <input type="text" id="nameInput" name="name" required><br><br>
+      <label for="text">Text:</label>
+      <div class="input-row">
+        <textarea id="text" name="text" required placeholder="Hello my name is..."></textarea>
+        <input type="submit" value="Submit">
+      </div>
+    </form>
 
-    <label for="text">Text:</label>
-
-    <div class="input-row">
-      <textarea id="text" name="text" required placeholder="Hello my name is..."></textarea>
-      <input type="submit" value="Submit">
+    <div id="submittedContainer" style="display: none;">
+      <p><strong>Name:</strong> <span id="displayName"></span></p>
+      <p><strong>Text:</strong></p>
+      <textarea id="submittedText" readonly></textarea>
     </div>
-  </form>
-
-  <div id="submittedContainer" style="display: none;">
-    <p><strong>Name:</strong> <span id="displayName"></span></p>
-    <p><strong>Text:</strong></p>
-    <textarea id="submittedText" readonly></textarea>
   </div>
 
   <script>
@@ -74,9 +141,7 @@
     function autoResizeAndGrowWidth(el) {
       el.style.height = 'auto';
       el.style.width = 'auto';
-
       el.style.height = el.scrollHeight + 'px';
-
       const lines = el.value.split('\n');
       const currentLine = lines[lines.length - 1];
       const avgCharWidth = 8;
@@ -93,16 +158,12 @@
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-
       const nameValue = nameInput.value;
       const textValue = inputTextarea.value;
-
       submittedTextarea.value = textValue;
       submittedTextarea.style.height = inputTextarea.style.height;
       submittedTextarea.style.width = inputTextarea.style.width;
-
       displayName.textContent = nameValue;
-
       form.style.display = 'none';
       submittedContainer.style.display = 'block';
     });
